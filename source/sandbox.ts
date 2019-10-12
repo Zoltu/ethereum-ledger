@@ -20,7 +20,7 @@ async function clickHandler() {
 		case 0:
 			state = 1
 			const address = await getAddress()
-			const addressString = Array.from(address).map(x => x.toString(16).padStart(2, '0')).join('')
+			const addressString = address.toString(16)
 			document.getElementById('address')!.innerText = addressString
 			break
 		case 1:

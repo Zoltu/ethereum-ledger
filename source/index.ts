@@ -61,7 +61,7 @@ class GetAddressInstruction implements IAdpuInstruction {
 		private readonly derivationPath: string = `m/44'/60'/0'/0/0`,
 	) { }
 	public readonly toBytes = () => [encodeInstruction(2, 0, 0, derivationPathToBytes(this.derivationPath))]
-	public readonly parseResult = (result: Uint8Array): Uint8Array & {length:20} => {
+	public readonly parseResult = (result: Uint8Array): bigint => {
 		const publicKeyLength = result[0]
 		const publicKeyStart = 1
 		const publicKeyEnd = publicKeyStart + publicKeyLength
@@ -69,8 +69,8 @@ class GetAddressInstruction implements IAdpuInstruction {
 		const addressLength = result[publicKeyEnd]
 		if (addressLength !== 40) throw new Error(`Expected a 40 byte address but received ${addressLength} bytes.`)
 		const addressStart = publicKeyEnd + 1
-		const addressBytes = result.slice(addressStart, addressStart + 40) as Uint8Array & {length:40}
-		return decodeAsciiAddress(addressBytes)
+		const addressBytes = result.slice(addressStart, addressStart + 40)
+		return decodeAsciiAddress(addressBytes as Uint8Array & {length:40})
 	}
 }
 
@@ -243,23 +243,18 @@ function derivationPathToBytes(derivationPath: string): Uint8Array {
 function decodeSignature(signatureBytes: Uint8Array): Signature {
 	if (signatureBytes.length !== 65) throw new Error(`Received a signature that was longer than expected. Actual length: ${signatureBytes.length}; expected length: 65`)
 	return {
-		v: bytesToUnsigned(signatureBytes.slice(0, 1)),
-		r: bytesToUnsigned(signatureBytes.slice(1, 33)),
-		s: bytesToUnsigned(signatureBytes.slice(33, 65)),
+		v: bytesToInteger(signatureBytes.slice(0, 1)),
+		r: bytesToInteger(signatureBytes.slice(1, 33)),
+		s: bytesToInteger(signatureBytes.slice(33, 65)),
 	}
 }
 
-function decodeAsciiAddress(address: Uint8Array & {length:40}): Uint8Array & {length:20} {
+function decodeAsciiAddress(address: Uint8Array & {length:40}): bigint {
 	const addressAsString = new TextDecoder().decode(address)
-	const result = new Uint8Array(20) as Uint8Array & {length:20}
-	for (let i = 0; i < 40; i += 2) {
-		const asciiByte = addressAsString.slice(i, i+2)
-		result[i / 2] = Number.parseInt(asciiByte, 16)
-	}
-	return result
+	return BigInt(`0x${addressAsString}`)
 }
 
-function bytesToUnsigned(bytes: Uint8Array) {
+function bytesToInteger(bytes: Uint8Array) {
 	let value = 0n
 	for (let byte of bytes) {
 		value = (value << 8n) + BigInt(byte)
@@ -270,7 +265,7 @@ function bytesToUnsigned(bytes: Uint8Array) {
 
 /// Public API
 
-export async function getAddress(derivationPath?: string): Promise<Uint8Array & {length:20}> {
+export async function getAddress(derivationPath?: string): Promise<bigint> {
 	const instruction = new GetAddressInstruction(derivationPath)
 	return await send(instruction)
 }
