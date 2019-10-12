@@ -1,6 +1,6 @@
 {
 	"name": "@zoltu/ethereum-ledger",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"description": "A library for interfacing with Ethereum Ledger App from a modern browser via Web Authentication API",
 	"repository": {
 		"type": "git",

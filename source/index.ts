@@ -1,9 +1,9 @@
 import { Semaphore } from './vendor/semaphore-async-await/semaphore'
 
 interface Signature {
-	r: Uint8Array & {length:32}
-	s: Uint8Array & {length:32}
-	v: Uint8Array & {length:1}
+	r: bigint
+	s: bigint
+	v: bigint
 }
 
 interface AppConfiguration {
@@ -243,9 +243,9 @@ function derivationPathToBytes(derivationPath: string): Uint8Array {
 function decodeSignature(signatureBytes: Uint8Array): Signature {
 	if (signatureBytes.length !== 65) throw new Error(`Received a signature that was longer than expected. Actual length: ${signatureBytes.length}; expected length: 65`)
 	return {
-		v: signatureBytes.slice(0, 1) as Uint8Array & {length:1},
-		r: signatureBytes.slice(1, 33) as Uint8Array & {length:32},
-		s: signatureBytes.slice(33, 65) as Uint8Array & {length:32},
+		v: bytesToUnsigned(signatureBytes.slice(0, 1)),
+		r: bytesToUnsigned(signatureBytes.slice(1, 33)),
+		s: bytesToUnsigned(signatureBytes.slice(33, 65)),
 	}
 }
 
@@ -257,6 +257,14 @@ function decodeAsciiAddress(address: Uint8Array & {length:40}): Uint8Array & {le
 		result[i / 2] = Number.parseInt(asciiByte, 16)
 	}
 	return result
+}
+
+function bytesToUnsigned(bytes: Uint8Array) {
+	let value = 0n
+	for (let byte of bytes) {
+		value = (value << 8n) + BigInt(byte)
+	}
+	return value
 }
 
 

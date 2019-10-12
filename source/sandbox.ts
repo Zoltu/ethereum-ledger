@@ -31,11 +31,12 @@ async function clickHandler() {
 		case 2:
 			state = 0
 			const token = tokens['DAI']
-			await provideErc20TokenInformation(token.symbol, token.address, token.decimals, 1, token.signature)
+			// NOTE: `await` intentionally missing on this call because awaiting it causes Firefox to think that the user interaction chain ends when this call returns. by not awaiting it, we can instead rely on the internal locking system to properly queue this up with the following `signTransaction`, thus causing Firefox to think both APDU calls are part of the same user interaction
+			provideErc20TokenInformation(token.symbol, token.address, token.decimals, 1, token.signature)
 			const signature = await signTransaction(uint8ArrayFromHexString(`f8aa80850430e2340083030d409489d24a6b4ccb1b6faa2625fe562bdd9a2326035980b844a9059cbb000000000000000000000000${document.getElementById('address')!.innerText}00000000000000000000000000000000000000000000000098a7d9b8314c0000010000`))
-			const rString = Array.from(signature.r).map(x => x.toString(16).padStart(2, '0')).join('')
-			const sString = Array.from(signature.s).map(x => x.toString(16).padStart(2, '0')).join('')
-			const vString = Array.from(signature.v).map(x => x.toString(16).padStart(2, '0')).join('')
+			const rString = signature.r.toString(16)
+			const sString = signature.s.toString(16)
+			const vString = signature.v.toString(16)
 			document.getElementById('signature')!.innerText = `{ r: "${rString}", s: "${sString}", v: "${vString}" }`
 			break
 	}
