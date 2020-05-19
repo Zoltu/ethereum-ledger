@@ -176,8 +176,9 @@ function chunk(instruction: number, data: Uint8Array): Uint8Array[] {
 	const result = []
 	for (let i = 0; i < data.length; i += 150) {
 		const isFirstChunk = i === 0
-		const isLastChunk = data.length <= i + 150
-		const chunk = data.slice(i, isLastChunk ? data.length : 150)
+		const chunkStart = i
+		const chunkEnd = Math.min(data.length, i + 150)
+		const chunk = data.slice(chunkStart, chunkEnd)
 		result.push(encodeInstruction(instruction, isFirstChunk ? 0x00 : 0x80, 0x00, chunk))
 	}
 	return result
