@@ -1,5 +1,7 @@
-<script type='module' src='output-es/sandbox.js'></script>
+<script type='module' src='./sandbox.js'></script>
+<div><label>Derivation Path: </label><input id='derivation-path' type='text' value="m/44'/60'/0'/0/0" onchange='derivationPathChangedHandler()'></div>
 <div><label>Address: </label><pre id='address' style='display:inline-block; margin: 0px'></pre></div>
 <div><label>Ledger ETH App Version: </label><pre id='version' style='display:inline-block; margin: 0px'></pre></div>
 <div><label>Signature: </label><pre id='signature' style='display:inline-block; margin: 0px'></pre></div>
 <button onclick='clickHandler()' style='display:block'>Click</button>
+<div><label>Last Error: </label><pre id='error' style='display:inline-block; margin:0px; color:red'></pre></div>

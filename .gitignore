@@ -1,3 +1,5 @@
 /output-es/
 /output-node/
 /node_modules/
+/ipfs/*
+!/ipfs/index.html

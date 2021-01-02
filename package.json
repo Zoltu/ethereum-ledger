@@ -12,12 +12,14 @@
 	"dependencies": {},
 	"devDependencies": {
 		"@zoltu/typescript-transformer-append-js-extension": "1.0.1",
+		"recursive-fs": "2.1.0",
 		"ts-node": "8.4.1",
 		"ttypescript": "1.5.7",
 		"typescript": "3.6.3"
 	},
 	"scripts": {
-		"build": "ttsc --project tsconfig-es.json && tsc --project tsconfig-node.json"
+		"build": "ttsc --project tsconfig-es.json && tsc --project tsconfig-node.json",
+		"prep-ipfs": "npm run build && recursive-copy \"./output-es/\" \"./ipfs/\""
 	},
 	"files": [
 		"/source/",
