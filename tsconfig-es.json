@@ -5,8 +5,5 @@
 		"moduleResolution": "classic",
 		"outDir": "output-es",
 		"noEmit": false,
-		"plugins": [
-			{ "transform": "@zoltu/typescript-transformer-append-js-extension", "after": true }
-		],
 	},
 }

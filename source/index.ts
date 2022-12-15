@@ -1,4 +1,4 @@
-import { Semaphore } from './vendor/semaphore-async-await/semaphore'
+import { Semaphore } from './vendor/semaphore-async-await/semaphore.js'
 
 interface Signature {
 	r: bigint

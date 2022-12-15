@@ -1,4 +1,4 @@
-import { getAddress, getAppConfiguration, provideErc20TokenInformation, signTransaction } from './index'
+import { getAddress, getAppConfiguration, provideErc20TokenInformation, signTransaction } from './index.js'
 
 // source: https://github.com/LedgerHQ/ledger-live-common/blob/master/src/load/tokens/ethereum/erc20.js
 const tokensArray = [
@@ -64,7 +64,13 @@ async function clickHandler() {
 		setHighlight()
 	} catch (error) {
 		reset()
-		document.getElementById('error')!.innerText = error.message
+		if (typeof error === 'string') {
+			document.getElementById('error')!.innerText = error
+		} else if (typeof error === 'object' && error !== null && 'message' in error && typeof error.message === 'string') {
+			document.getElementById('error')!.innerText = error.message
+		} else {
+			document.getElementById('error')!.innerText = JSON.stringify(error)
+		}
 	}
 }
 (window as any).clickHandler = clickHandler
