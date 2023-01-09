@@ -139,10 +139,7 @@ async function exchange(dataUnit: Uint8Array): Promise<ArrayBuffer> {
 		publicKey: {
 			timeout: 2 * 60 * 1000,
 			challenge: new Uint8Array(32),
-			allowCredentials: [{
-				id: scramblePayload(dataUnit),
-				type: 'public-key',
-			}],
+			allowCredentials: [{ type: 'public-key', id: scramblePayload(dataUnit) }],
 		}
 	}
 	const result = await navigator.credentials.get(credentialRequestOptions) as PublicKeyCredential
